@@ -7,20 +7,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.csc2514.rsvpexperiment.utils.Csv;
 import com.csc2514.rsvpexperiment.utils.OffsetWord;
 import com.csc2514.rsvpexperiment.utils.Rsvp;
 import com.csc2514.rsvpexperiment.utils.TimerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.TimerTask;
 
 /**
- * Created by Andrés on 3/14/2015.
+ * Created by Patricio Córdova on 3/14/2015.
  */
 public class RsvpReadingDemo extends ReadingActivity {
 
@@ -53,12 +50,7 @@ public class RsvpReadingDemo extends ReadingActivity {
 
     @Override
     public void start(View view) throws IOException, InterruptedException {
-        int id = 1;
-        if(((RadioButton) findViewById(R.id.text1)).isChecked()){
-            id = R.raw.text1;
-        }else{
-            id = R.raw.text2;
-        }
+        int id = R.raw.text0;
         String fileContents = readFile(getResources().openRawResource(id));
         rsvp = new Rsvp(fileContents,wpm,offset);
         wait = rsvp.calculateMillisecondsWord();

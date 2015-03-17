@@ -16,12 +16,12 @@
         android:id="@+id/text"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:height="41.4mm"
-        android:width="41.4mm"
+        android:height="31mm"
+        android:width="31mm"
         android:background="#ffffffff"
         android:editable="false"
         android:focusable="false"
-        android:textSize="12pt"
+        android:textSize="10pt"
         android:typeface="monospace" />
 
     <RadioGroup
@@ -85,7 +85,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/radioGroup"
         android:layout_toEndOf="@+id/radioGroup"
-        android:textSize="12pt"
+        android:textSize="10pt"
         android:textColor="#ffff0000"
         android:typeface="monospace" />
 

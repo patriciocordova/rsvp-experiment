@@ -87,14 +87,14 @@ public class RsvpReadingDemo extends ReadingActivity {
                         OffsetWord word = rsvp.next();
                         String print = "";
                         String offsetWhite = (word.getOffset() > 0) ? String.format("%"+word.getOffset()+"s", " ") : "";
-                        print+="________________\n";
+                        print+="_____________\n";
                         print+=String.format("%"+offset+"s", " ")+"|\n";
 
                         String pre = (word.getPre().length() > 0) ? String.format("%"+word.getPre().length()+"s", " ") : "";
                         coloredLetter.setText(offsetWhite + pre + word.getFocus());
                         print+= offsetWhite + "" + word + "\n";
 
-                        print+=String.format("%"+offset+"s", " ").replace(" ","_")+"|__________\n";
+                        print+=String.format("%"+offset+"s", " ").replace(" ","_")+"|_______\n";
                         final String finalPrint = print;
 
                         runOnUiThread(new Runnable() {

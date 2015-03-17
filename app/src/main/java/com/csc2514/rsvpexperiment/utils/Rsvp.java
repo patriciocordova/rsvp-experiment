@@ -1,6 +1,7 @@
 package com.csc2514.rsvpexperiment.utils;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -16,10 +17,35 @@ public class Rsvp implements Iterator<OffsetWord> {
         corpus = new ArrayList<String>();
         String[] words = text.split("[ \\n]+");
         corpus.addAll(Arrays.asList(words));
+        corpus = handlePauses(corpus);
         this.wpm = wpm;
         this.offset = offset;
         iteratorIndex = 0;
 	}
+
+    private ArrayList<String> handlePauses(ArrayList<String> corpus){
+        /**
+         * Take a corpus, build a new one with blanks and duplicates inserted on stops and pauses.
+         */
+        String punctuation_pause = "\\w+[\\,\\:\\;]";
+        String punctuation_end = "\\w+[\\.\\!\\?]";
+        ArrayList<String> fixed_corpus = new ArrayList<String>();
+
+        //I'm creating a new list so I don't have to try to modify a list during iteraiton.
+        for(String word : corpus){
+            fixed_corpus.add(word);
+            if(word.matches(punctuation_pause)){
+                System.out.println("found pauseword!: " + word);
+                fixed_corpus.add(word);
+            }
+            else if (word.matches(punctuation_end)){
+                System.out.println("found STOP!: " + word);
+                fixed_corpus.add(" ");
+            }
+        }
+
+        return fixed_corpus;
+    }
 	
 	public void go() throws InterruptedException, IOException{
 		int wait = this.calculateMillisecondsWord();
@@ -52,7 +78,8 @@ public class Rsvp implements Iterator<OffsetWord> {
         }
         // Figure out breaking point
         int split = 0;
-        word = word.replaceAll("[^a-zA-Z0-9]", "");
+        //NOTICE: I added space to allowable characters so we can have the blank thing.
+        word = word.replaceAll("[^a-zA-Z0-9 ]", "");
         if (word.length() == 1)
         {
             split = 1;

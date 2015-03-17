@@ -34,23 +34,6 @@
         android:layout_toStartOf="@+id/text"
         android:id="@+id/radioGroup">
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Text A"
-            android:id="@+id/text1"
-            android:textColor="#ffffffff"
-            android:onClick="onRadioButtonClicked"
-            android:checked="true" />
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Text B"
-            android:id="@+id/text2"
-            android:checked="false"
-            android:textColor="#ffffffff"
-            android:onClick="onRadioButtonClicked"
-            />
     </RadioGroup>
 
     <Button
@@ -73,9 +56,9 @@
         android:id="@+id/username"
         android:layout_toStartOf="@+id/text"
         android:textColor="#ffffffff"
-        android:layout_alignBottom="@+id/start"
-        android:layout_alignLeft="@+id/radioGroup"
-        android:layout_alignStart="@+id/radioGroup" />
+        android:layout_alignTop="@+id/text"
+        android:layout_alignRight="@+id/radioGroup"
+        android:layout_alignEnd="@+id/radioGroup" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -88,5 +71,16 @@
         android:textSize="10pt"
         android:textColor="#ffff0000"
         android:typeface="monospace" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Title"
+        android:id="@+id/title"
+        android:layout_below="@+id/username"
+        android:layout_alignRight="@+id/radioGroup"
+        android:layout_alignEnd="@+id/radioGroup"
+        android:textColor="#ffffffff" />
 
 </RelativeLayout>

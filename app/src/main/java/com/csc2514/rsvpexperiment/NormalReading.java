@@ -30,8 +30,9 @@ public class NormalReading extends ReadingActivity {
     TimerFactory timerFactory;
     SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
     int seconds;
-    String username;
-    String type;
+    String name;
+    int typeExperiment;
+    int textOrder;
     String startTime;
     String endTime;
 
@@ -47,21 +48,32 @@ public class NormalReading extends ReadingActivity {
         super.onCreate(savedInstanceState);
         //getWindow().getDecorView().setSystemUiVisibility(HIDER_FLAGS);
         setContentView(R.layout.activity_reading);
-        try {
-            changeText(R.raw.text1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         seconds = totalSeconds;
         timerFactory = new TimerFactory();
+        TextView tvTitle = (TextView)findViewById(R.id.title);
+        tvTitle.setText("Infinite scrolling");
 
         //Get extras
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            username = extras.getString("Name");
-            type = extras.getString("Type");
+            name = extras.getString("Name");
+            typeExperiment = extras.getInt("TypeExperiment");
+            textOrder = extras.getInt("TextOrder");
             TextView tv = (TextView) findViewById(R.id.username);
-            tv.setText(username);
+            tv.setText(name);
+
+            int changeId = -1;
+            if(typeExperiment == 0){
+                changeId = (textOrder == 0)?R.raw.text1:R.raw.text2;
+            }else{
+                changeId = (textOrder == 0)?R.raw.text2:R.raw.text1;
+            }
+
+            try {
+                changeText(changeId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -85,14 +97,15 @@ public class NormalReading extends ReadingActivity {
     public void processResults()  {
         endTime = sdf.format(new Date());
         final int normalReadingTime = totalSeconds - seconds;
-        if(type.compareTo("AB") == 0){
+        if(typeExperiment == 0){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Infinite scrolling finished!")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent intent = new Intent(getBaseContext(), RsvpReading.class);
-                        intent.putExtra("Type", type);
-                        intent.putExtra("Name", username);
+                        intent.putExtra("TypeExperiment", typeExperiment);
+                        intent.putExtra("TextOrder", textOrder);
+                        intent.putExtra("Name", name);
                         intent.putExtra("StartTime", startTime);
                         intent.putExtra("EndTime", endTime);
                         startActivity(intent);
@@ -107,7 +120,9 @@ public class NormalReading extends ReadingActivity {
                         public void onClick(DialogInterface dialog, int id){
                             Csv fileResults = new Csv(new File(getFilesDir(),Home.fileName));
                             try {
-                                fileResults.add(new String[]{username,startTime+" | "+endTime,"Done",type});
+                                String sTextOrder = (textOrder == 0)?"AB":"BA";
+                                String sTypeExperiment = (typeExperiment == 0)?"SR":"RS";
+                                fileResults.add(new String[]{name,startTime+" | "+endTime,"Done",sTypeExperiment,sTextOrder});
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -132,7 +147,8 @@ public class NormalReading extends ReadingActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (seconds == 20 || seconds == 10 || seconds == 2) {
+                    if (seconds == 20) {
+
                         Toast toast = Toast.makeText(getApplicationContext(), seconds + " seconds left", Toast.LENGTH_SHORT);
                         toast.show();
                     }

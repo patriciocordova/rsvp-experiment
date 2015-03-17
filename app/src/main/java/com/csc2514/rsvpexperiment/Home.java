@@ -29,6 +29,7 @@ public class Home extends Activity {
 
     static String fileName = "experiment_results.csv";
     int lastIndex;
+    int typeExperiment = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class Home extends Activity {
 
     public void newExperiment(View view){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        CharSequence[] array = {"AB (Inf. Scrolling -> RSVP)", "BA (RSVP -> Inf. Scrolling)","Demo"};
+        CharSequence[] array = {"SR", "RS","Demo"};
         builder.setTitle("New experiment")
                 .setSingleChoiceItems(array, 1,
                         new DialogInterface.OnClickListener() {
@@ -56,18 +57,46 @@ public class Home extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         ListView lw = ((AlertDialog) dialog).getListView();
-                        int checkedItem = lw.getCheckedItemPosition();
-                        if (checkedItem == 0) {
-                            Intent intent = new Intent(getBaseContext(), NormalReading.class);
-                            intent.putExtra("Type", "AB");
-                            intent.putExtra("Name", "User " + lastIndex);
-                            startActivity(intent);
-                        } else if(checkedItem == 1){
-                            Intent intent = new Intent(getBaseContext(), RsvpReading.class);
-                            intent.putExtra("Type", "BA");
-                            intent.putExtra("Name", "User " + lastIndex);
-                            startActivity(intent);
-                        } else{
+                        typeExperiment = lw.getCheckedItemPosition();
+
+                        if (typeExperiment != 2) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                            CharSequence[] array = {"Text A", "Text B"};
+                            builder.setTitle("First text")
+                                    .setSingleChoiceItems(array, 1,
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int which) {
+                                                }
+                                            })
+                                    .setPositiveButton("Go", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            ListView lw = ((AlertDialog) dialog).getListView();
+                                            int textOrder = lw.getCheckedItemPosition();
+                                            if (typeExperiment == 0) {
+                                                Intent intent = new Intent(getBaseContext(), NormalReading.class);
+                                                intent.putExtra("TypeExperiment", typeExperiment);
+                                                intent.putExtra("TextOrder", textOrder);
+                                                intent.putExtra("Name", "User " + lastIndex);
+                                                startActivity(intent);
+                                            } else{
+                                                Intent intent = new Intent(getBaseContext(), RsvpReading.class);
+                                                intent.putExtra("TypeExperiment", typeExperiment);
+                                                intent.putExtra("TextOrder", textOrder);
+                                                intent.putExtra("Name", "User " + lastIndex);
+                                                startActivity(intent);
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id) {
+                                        }
+                                    });
+                            AlertDialog dialog2 = builder.create();
+                            dialog2.show();
+                        }else{
                             Intent intent = new Intent(getBaseContext(), RsvpReadingDemo.class);
                             startActivity(intent);
                         }
@@ -86,7 +115,7 @@ public class Home extends Activity {
         TableLayout table = (TableLayout) findViewById(R.id.table);
         table.removeAllViews();
 
-        table.addView(createRow(new String[]{"User","Infinite\nScrolling","RSVP","Type"},true,false));
+        table.addView(createRow(new String[]{"User","Infinite\nScrolling","RSVP","Exp.","Order"},true,false));
         Csv fileResults = new Csv(new File(getFilesDir(),fileName));
         ArrayList<String[]> results = fileResults.read();
         for (int i=0;i<results.size();i++){

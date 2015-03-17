@@ -28,14 +28,16 @@ public class RsvpReading extends ReadingActivity {
     Rsvp rsvp;
     int wait;
     int offset = 5;
-    int wpm = 250;
+    int wpm = 220;
     EditText text;
     TextView coloredLetter;
 
-    String username;
-    String type;
+    String name;
+    int typeExperiment;
+    int textOrder;
     String startTime;
     String endTime;
+    int textId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,29 +53,41 @@ public class RsvpReading extends ReadingActivity {
         text =  (EditText)findViewById(R.id.text);
         coloredLetter = (TextView) findViewById(R.id.coloredLetter);
         coloredLetter.setText("");
+        TextView tvTitle = (TextView)findViewById(R.id.title);
+        tvTitle.setText("RSVP");
+
         //Get extras
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            username = extras.getString("Name");
-            type = extras.getString("Type");
+            name = extras.getString("Name");
+            typeExperiment = extras.getInt("TypeExperiment");
+            textOrder = extras.getInt("TextOrder");
             TextView tv = (TextView) findViewById(R.id.username);
-            tv.setText(username);
+            tv.setText(name);
 
-            if(type.compareTo("AB") == 0){
+            if(typeExperiment == 0){
                 startTime = extras.getString("StartTime");
                 endTime = extras.getString("EndTime");
+            }
+
+            textId = -1;
+            if(typeExperiment == 1){
+                textId = (textOrder == 0)?R.raw.text1:R.raw.text2;
+            }else{
+                textId = (textOrder == 0)?R.raw.text2:R.raw.text1;
+            }
+
+            try {
+                changeText(textId);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
     @Override
     public void start(View view) throws IOException, InterruptedException {
-        int id = 1;
-        if(((RadioButton) findViewById(R.id.text1)).isChecked()){
-            id = R.raw.text1;
-        }else{
-            id = R.raw.text2;
-        }
+        int id = textId;
         String fileContents = readFile(getResources().openRawResource(id));
         rsvp = new Rsvp(fileContents,wpm,offset);
         wait = rsvp.calculateMillisecondsWord();
@@ -88,14 +102,15 @@ public class RsvpReading extends ReadingActivity {
 
     @Override
     public void processResults()  {
-        if(type.compareTo("BA") == 0){
+        if(typeExperiment == 1){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("RSVP finished!")
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent intent = new Intent(getBaseContext(), NormalReading.class);
-                            intent.putExtra("Type", type);
-                            intent.putExtra("Name", username);
+                            intent.putExtra("TypeExperiment", typeExperiment);
+                            intent.putExtra("TextOrder", textOrder);
+                            intent.putExtra("Name", name);
                             startActivity(intent);
                         }
                     });
@@ -108,7 +123,9 @@ public class RsvpReading extends ReadingActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             Csv fileResults = new Csv(new File(getFilesDir(), Home.fileName));
                             try {
-                                fileResults.add(new String[]{username, startTime+" | "+endTime, "Done", type});
+                                String sTextOrder = (textOrder == 0)?"AB":"BA";
+                                String sTypeExperiment = (typeExperiment == 0)?"SR":"RS";
+                                fileResults.add(new String[]{name, startTime+" | "+endTime, "Done",sTypeExperiment,sTextOrder});
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

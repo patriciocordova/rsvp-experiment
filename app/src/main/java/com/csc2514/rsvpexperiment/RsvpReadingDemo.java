@@ -34,6 +34,9 @@ public class RsvpReadingDemo extends ReadingActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reading);
+        TextView tv = (TextView)findViewById(R.id.title);
+        tv.setText("Demo");
+
         try {
             changeText(R.raw.text0);
         } catch (IOException e) {
@@ -43,8 +46,6 @@ public class RsvpReadingDemo extends ReadingActivity {
         text =  (EditText)findViewById(R.id.text);
         coloredLetter = (TextView) findViewById(R.id.coloredLetter);
         coloredLetter.setText("");
-        findViewById(R.id.text1).setVisibility(View.GONE);
-        findViewById(R.id.text2).setVisibility(View.GONE);
         findViewById(R.id.username).setVisibility(View.GONE);
     }
 

@@ -25,7 +25,7 @@ public class RsvpReadingDemo extends ReadingActivity {
     Rsvp rsvp;
     int wait;
     int offset = 5;
-    int wpm = 250;
+    int wpm = 220;
     EditText text;
     TextView coloredLetter;
 
